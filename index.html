@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<!--Stickers for who can tell me waht this does-->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  	
+	
+	<body>
+		<div style="background-color: #C0C0C0; width: 900px; height: 200%; margin-left: 400px; border-radius: 30px;">
+			<!--Header-->
+			<div>
+				<h1 style="text-align: center;">This is THE Weather!!!!!</h1>
+			</div>
+			<!--Image-->
+			<div>
+				<img id="picture" src="https://icons.wxug.com/logos/PNG/wundergroundLogo_4c_rev_horz.png" style="padding-left: 5%;">
+                
+			</div>
+			<!--Table-->
+			<div>
+				<h1 style="text-align: left;">Weather NOW</h1>
+				<table class="table table-striped table-bordered" cellspacing="0" width="100%">
+        
+                    
+					<thead>
+						<tr>
+							<th>Location</th>
+							<th>Temperature</th>
+							<th>Weather Icon</th>
+							<th>Conditions</th>
+							<th>Wind</th>
+						</tr>
+						<tr id="table">
+							<!--insert HTML on the fly-->
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+
+<script>
+	
+//when the document loads this will "run"
+jQuery(document).ready(function($) {
+	//make our call to the API url to get our json object
+  $.ajax({
+	  url : "http://api.wunderground.com/api/f5f4f78007917912/conditions/q/MT/bozeman.json",
+	  dataType : "jsonp",
+	  success : function(parsed_json) {
+
+		 
+		  populateWeatherPage(parsed_json);
+		  //our json object will come to us as an array of objects
+		  console.log(parsed_json);
+	  }
+	  //error handler is missing!!!!!!!
+  });
+	
+	//function to fill weather conditions table
+	function populateWeatherPage(withData) {
+		
+		//create variables to use the data we have extracted
+		var location = withData['current_observation']['display_location']['full'];
+  		var temp_f = withData['current_observation']['temp_f'];
+  		var weather = withData['current_observation']['weather'];
+  		var wind = withData['current_observation']['wind_string'];
+		var image = withData['current_observation']['image']['url'];
+		var icon = withData['current_observation']['icon_url'];		
+		console.log(image);
+		
+		//create a variable to use in our jQuery method
+		var buildHTML = "";
+		
+		//set the value with data from our json object
+		buildHTML += "<td><b>" + location + "</b></td>";
+		buildHTML += "<td>" + temp_f + "</td>";
+		buildHTML += "<td><img src='" + icon + "'></td>";
+		buildHTML += "<td>" + weather + "</td>";
+		buildHTML += "<td>" + wind + "</td>";
+		
+		//.html() is used to insert our
+		//variable above as actual HTML
+		$('#table').html(buildHTML);
+		//set image attribute to weather icon
+		//from json data
+		
+	}
+	
+	
+});
+</script>
+		
+	</body>
+	
+</html>
